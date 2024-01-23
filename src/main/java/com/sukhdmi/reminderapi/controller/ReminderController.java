@@ -2,7 +2,9 @@ package com.sukhdmi.reminderapi.controller;
 
 import com.sukhdmi.reminderapi.dto.ReminderDTO;
 import com.sukhdmi.reminderapi.entity.Reminder;
+import com.sukhdmi.reminderapi.entity.User;
 import com.sukhdmi.reminderapi.service.ReminderService;
+import com.sukhdmi.reminderapi.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,26 +20,40 @@ import java.util.List;
 @AllArgsConstructor//генерирует конструктор, который принимает все поля класса в качестве аргументов.
 public class ReminderController {
     private final ReminderService reminderService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<Reminder> create(@RequestBody ReminderDTO dto){
-        return new ResponseEntity<>(reminderService.create(dto), HttpStatus.OK);
+        return mappingResponseReminder(reminderService.create(dto));
     }
 
     @GetMapping
     public ResponseEntity<List<Reminder>> readAll(){
-        return new ResponseEntity<>(reminderService.readAll(), HttpStatus.OK);
+        return mappingResponseListReminder(reminderService.readAll());
+    }
+
+    @GetMapping("/user{user_id}")
+    public ResponseEntity<List<Reminder>> readByUserId(@PathVariable Long user_id){
+        return mappingResponseListReminder(reminderService.readByUserId(user_id));
     }
 
     @PutMapping
     public ResponseEntity<Reminder> update(@RequestBody Reminder reminder){
-        return new ResponseEntity<>(reminderService.update(reminder), HttpStatus.OK);
+        return mappingResponseReminder(reminderService.update(reminder));
     }
 
     @DeleteMapping({"/delete/id"})
     public HttpStatus delete(@PathVariable Long id){
         reminderService.delete(id);
         return HttpStatus.OK;
+    }
+
+    private ResponseEntity<Reminder> mappingResponseReminder(Reminder reminder) {
+        return new ResponseEntity<>(reminder, HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<Reminder>> mappingResponseListReminder(List<Reminder> reminders) {
+        return new ResponseEntity<>(reminders, HttpStatus.OK);
     }
 }
 //контроллер, который обрабатывает запросы, связанные с созданием, чтением,

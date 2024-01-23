@@ -9,7 +9,7 @@ public class ReminderDTO {
     private String title;
     private String description;
     private LocalDateTime remind;
-    private Long user_id;
+    private Long userId;
 
 }
 //используется для передачи данных между различными компонентами приложения или между самим приложением

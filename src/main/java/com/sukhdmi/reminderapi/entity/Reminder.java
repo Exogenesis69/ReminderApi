@@ -1,10 +1,7 @@
 package com.sukhdmi.reminderapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -41,10 +38,12 @@ public class Reminder {
     @Size(min=1, max = 4096)
     private String description;//Полное описание
 
-    private Long user_id;//Идентификатор пользователя (привязан к таблице пользователей)
-
     @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss.SSSZ")//при сериализации и десериализации объекта в формат JSON,
     //значение поля remind будет отформатировано в соответствии с указанным шаблоном.
     private LocalDateTime remind;//Дата и время напоминания в формате ISO
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 //класс  Reminder  является сущностью, которая будет отображаться в базе данных.

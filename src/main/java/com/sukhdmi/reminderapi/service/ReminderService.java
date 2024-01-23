@@ -13,18 +13,23 @@ import java.util.List;
 public class ReminderService {
 
     private final ReminderRepository reminderRepository;
+    private final UserService userService;
 
     public Reminder create(ReminderDTO dto) {
         return reminderRepository.save(Reminder.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .remind(dto.getRemind())
-                .user_id(dto.getUser_id())
+                .user(userService.readById(dto.getUserId()))
                 .build());
     }
 
     public List<Reminder>readAll(){
         return reminderRepository.findAll();
+    }
+
+    public List<Reminder> readByUserId(Long user_id) {
+        return reminderRepository.findByUserId(user_id);
     }
 
     public Reminder update(Reminder reminder){
