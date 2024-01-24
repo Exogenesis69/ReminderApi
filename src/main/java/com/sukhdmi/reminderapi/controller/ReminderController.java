@@ -6,6 +6,11 @@ import com.sukhdmi.reminderapi.entity.User;
 import com.sukhdmi.reminderapi.service.ReminderService;
 import com.sukhdmi.reminderapi.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +20,14 @@ import java.util.List;
 @RestController//указывает,что класс является контроллером веб-службы RESTful. Он объединяет аннотации  @Controller
 //и @ResponseBody,что означает,что каждый метод в контроллере возвращает данные, которые будут преобразованы в формат ответа HTTP
 
-@RequestMapping("/api/v1/reminder")//указывает базовый путь для всех методов в контроллере.
+@RequestMapping("/api/v1")//указывает базовый путь для всех методов в контроллере.
 
 @AllArgsConstructor//генерирует конструктор, который принимает все поля класса в качестве аргументов.
 public class ReminderController {
     private final ReminderService reminderService;
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping("reminder/create")
     public ResponseEntity<Reminder> create(@RequestBody ReminderDTO dto){
         return mappingResponseReminder(reminderService.create(dto));
     }
@@ -32,7 +37,17 @@ public class ReminderController {
         return mappingResponseListReminder(reminderService.readAll());
     }
 
-    @GetMapping("/user{user_id}")
+    @GetMapping("/list")//пагинация
+    public ResponseEntity<Page<Reminder>> readAll(Pageable page) {
+        return new ResponseEntity<>(reminderService.readAll(page), HttpStatus.OK);
+    }
+
+    @GetMapping("/sort")//сортировка по id(в будущем изменить на title и добавить время)
+    public ResponseEntity<Page<Reminder>> sortedReadAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+        return new ResponseEntity<>(reminderService.readAll(page), HttpStatus.OK);
+    }
+
+    @GetMapping("/user{user_id}")//поиск по id
     public ResponseEntity<List<Reminder>> readByUserId(@PathVariable Long user_id){
         return mappingResponseListReminder(reminderService.readByUserId(user_id));
     }
@@ -42,7 +57,7 @@ public class ReminderController {
         return mappingResponseReminder(reminderService.update(reminder));
     }
 
-    @DeleteMapping({"/delete/id"})
+    @DeleteMapping({"reminder/delete/id"})
     public HttpStatus delete(@PathVariable Long id){
         reminderService.delete(id);
         return HttpStatus.OK;

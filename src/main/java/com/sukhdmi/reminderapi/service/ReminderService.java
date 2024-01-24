@@ -4,6 +4,9 @@ import com.sukhdmi.reminderapi.dto.ReminderDTO;
 import com.sukhdmi.reminderapi.entity.Reminder;
 import com.sukhdmi.reminderapi.repository.ReminderRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +29,9 @@ public class ReminderService {
 
     public List<Reminder>readAll(){
         return reminderRepository.findAll();
+    }
+    public Page<Reminder> readAll(Pageable page){
+        return reminderRepository.findAll(page);
     }
 
     public List<Reminder> readByUserId(Long user_id) {
