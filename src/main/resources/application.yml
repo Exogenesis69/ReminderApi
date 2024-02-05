@@ -1,0 +1,19 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: Exogenesis
+            client-secret: vwhYpzo01OmFGxhqUbewtyKPTqmkDqQ1
+            scope: openid, profile
+            authorization-grant-type: authorization_code
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/auth/realms/Exogenesis
+            user-name-attribute: preferred_username
+keycloak:
+  server-url: http://localhost:8180/auth
+  realm: Exogenesis
+  username: admin
+  password: adminpass

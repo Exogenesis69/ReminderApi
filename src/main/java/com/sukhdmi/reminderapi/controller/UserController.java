@@ -1,7 +1,6 @@
 package com.sukhdmi.reminderapi.controller;
 
 import com.sukhdmi.reminderapi.entity.User;
-import com.sukhdmi.reminderapi.repository.UserRepository;
 import com.sukhdmi.reminderapi.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

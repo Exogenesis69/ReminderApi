@@ -2,22 +2,21 @@ package com.sukhdmi.reminderapi.controller;
 
 import com.sukhdmi.reminderapi.dto.ReminderDTO;
 import com.sukhdmi.reminderapi.entity.Reminder;
-import com.sukhdmi.reminderapi.entity.User;
 import com.sukhdmi.reminderapi.service.ReminderService;
 import com.sukhdmi.reminderapi.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController//указывает,что класс является контроллером веб-службы RESTful. Он объединяет аннотации  @Controller
+@RestController//указывает,что класс является контроллером веб-службы RESTfull. Он объединяет аннотации  @Controller
 //и @ResponseBody,что означает,что каждый метод в контроллере возвращает данные, которые будут преобразованы в формат ответа HTTP
 
 @RequestMapping("/api/v1")//указывает базовый путь для всех методов в контроллере.
@@ -26,6 +25,17 @@ import java.util.List;
 public class ReminderController {
     private final ReminderService reminderService;
     private final UserService userService;
+
+    @GetMapping
+    @PreAuthorize("hasRole('client_user')")
+    public String hello() {
+        return "Hello from Spring boot & Keycloak";
+    }
+    @GetMapping
+    @PreAuthorize("hasRole('client_admin')")
+    public String hello2() {
+        return "Hello from Spring boot & Keycloak - ADMIN";
+    }
 
     @PostMapping("reminder/create")
     public ResponseEntity<Reminder> create(@RequestBody ReminderDTO dto){
@@ -43,7 +53,8 @@ public class ReminderController {
     }
 
     @GetMapping("/sort")//сортировка по id(в будущем изменить на title и добавить время)
-    public ResponseEntity<Page<Reminder>> sortedReadAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+    public ResponseEntity<Page<Reminder>> sortedReadAll(@PageableDefault(sort = "id",
+            direction = Sort.Direction.DESC) Pageable page) {
         return new ResponseEntity<>(reminderService.readAll(page), HttpStatus.OK);
     }
 
